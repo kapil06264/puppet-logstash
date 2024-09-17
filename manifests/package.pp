@@ -38,7 +38,7 @@ class logstash::package(
   if $logstash::ensure == 'present' {
     # Check if we want to install a specific version.
     if $version {
-      if $::osfamily == 'redhat' {
+      if $facts['os']['family'] == 'redhat' {
         # Prerelease RPM packages have tildes ("~") in their version strings,
         # which can be quite surprising to the user. Let them say:
         #   6.0.0-rc2
@@ -99,7 +99,7 @@ class logstash::package(
       # Use the OS packaging system to locate the package.
       $package_local_file = undef
       $package_provider = undef
-      if $::osfamily == 'Debian' {
+      if $facts['os']['family'] == 'Debian' {
         $package_require = $logstash::manage_repo ? {
           true  => Class['apt::update'],
           false => undef,
@@ -112,7 +112,7 @@ class logstash::package(
   else { # Package removal
     $package_local_file = undef
     $package_require = undef
-    if ($::osfamily == 'Suse') {
+    if ($facts['os']['family'] == 'Suse') {
       $package_provider = 'rpm'
       $package_ensure = 'absent' # "purged" not supported by provider
     }
